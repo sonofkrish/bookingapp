@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cookieParser from 'cookie-parser'
 
 import authRoute from "./routes/auth.js";
 import hotelsRoute from "./routes/hotels.js";
@@ -20,11 +21,8 @@ const connect = async () => {
   }
 };
 
-mongoose.connection.on("disconnected", () => {
-  console.log("MongoDB disconnected!");
-});
-
 //middlewares
+app.use(cookieParser());
 app.use(express.json()); // To support json request data
 
 app.use("/api/auth", authRoute);
@@ -45,6 +43,10 @@ app.use((err, req, res, next) => {
 
 mongoose.connection.on("connected", () => {
   console.log("MongoDB connected back!");
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("MongoDB disconnected!");
 });
 
 app.listen(8800, () => {
